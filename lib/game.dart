@@ -10,7 +10,7 @@ class Game {
 
   Game({int maxRandom = 100}) {
     var r = Random();
-    _maxRandom = maxRandom;
+    _setMaxRandom = maxRandom;
     _answer = r.nextInt(maxRandom) + 1;
   }
 
@@ -31,6 +31,10 @@ class Game {
 
   _doCount() {
     _guessCount++;
+  }
+
+  set _setMaxRandom(int info) {
+    _maxRandom = info;
   }
 
   _doRound(int info) {
