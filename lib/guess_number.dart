@@ -19,7 +19,7 @@ void main() {
         if (input == 'N') {
           playAgain = false;
           print("\nYou've played ${Game().getRound.length} games.");
-          for(int i = 0; i < Game().getRound.length; i++){
+          for(var i = 0; i < Game().getRound.length; i++){
             print('🚀 Game #${i+1}: ${Game().getRound[i]} guesses.');
           }
         }
