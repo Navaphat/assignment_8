@@ -35,6 +35,7 @@ class HomePage extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.yellow.shade100,
             border: Border.all(width: 10.0, color: Colors.green),
+            borderRadius: BorderRadius.circular(15.0),
             boxShadow: [
               BoxShadow(
                 color: Colors.black,
@@ -44,33 +45,29 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-          //alignment: Alignment.center,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(50.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/guess_logo.png',
-                        height: 150.0,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          children: [
-                            Text('GUESS', style: TextStyle(fontSize: 50.0, color: Colors.red.shade100), ),
-                            Text('THE NUMBER', style: TextStyle(fontSize: 25.0, color: Colors.red), ),
-                          ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 75.0, ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/guess_logo.png', height: 150.0,),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Column(
+                            children: [
+                              Text('GUESS', style: TextStyle(fontSize: 50.0, color: Colors.red.shade100), ),
+                              Text('THE NUMBER', style: TextStyle(fontSize: 25.0, color: Colors.red), ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                //SizedBox(height: 75.0,),
                 SizedBox(
                   child: TextField(),
                   height: 75.0,
@@ -80,10 +77,7 @@ class HomePage extends StatelessWidget {
                   height: 50.0,
                   width: 120.0,
                   child: ElevatedButton(
-                    child: Text(
-                      'Guess',
-                      style: TextStyle(fontSize: 25.0, color: Colors.black),
-                    ),
+                    child: Text('Guess', style: TextStyle(fontSize: 25.0, color: Colors.black)),
                     onPressed: () {},
                   ),
                 ),
