@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'game.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +23,10 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
+
+  final TextEditingController _controller = TextEditingController();
+  var game = Game();
 
   @override
   Widget build(BuildContext context) {
@@ -49,36 +54,99 @@ class HomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 75.0, ),
+                  Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset('assets/images/guess_logo.png', height: 150.0,),
+                        Image.asset('assets/images/guess_logo.png', width: 125),
                         Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
+                          padding: const EdgeInsets.only(left: 8.0),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            //mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('GUESS', style: TextStyle(fontSize: 50.0, color: Colors.red.shade100), ),
-                              Text('THE NUMBER', style: TextStyle(fontSize: 25.0, color: Colors.red), ),
+                              Text('GUESS', style: TextStyle(fontSize: 50.0, color: Colors.red.shade100)),
+                              Text('THE NUMBER', style: TextStyle(fontSize: 25.0, color: Colors.red)),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                //SizedBox(height: 75.0,),
                 SizedBox(
-                  child: TextField(),
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.7),
+                      border: OutlineInputBorder(),
+                      hintText: 'Guess the Number 1 to 100',
+                    ),
+                  ),
                   height: 75.0,
                   width: 350,
                 ),
-                SizedBox(
-                  height: 50.0,
-                  width: 120.0,
-                  child: ElevatedButton(
-                    child: Text('Guess', style: TextStyle(fontSize: 25.0, color: Colors.black)),
-                    onPressed: () {},
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 32.0),
+                  child: SizedBox(
+                    height: 50.0,
+                    width: 120.0,
+                    child: ElevatedButton(
+                      child: Text('Guess', style: TextStyle(fontSize: 25.0, color: Colors.black)),
+                      onPressed: () {
+                        var input = _controller.text;
+                        var guess = int.tryParse(input!);
+                        String titleMessageResult = 'Result';
+                        String titleMessageError = 'Error';
+                        String errorMessage = 'Wrong Input, Please Enter Number only.';
+
+                        if(guess == null){
+                          showDialog(context: context, barrierDismissible: false, builder: (BuildContext context, ) {
+                            return AlertDialog(
+                              title: Text(titleMessageError),
+                              content: Text(errorMessage),
+
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Ok')
+                                ),
+                              ],
+                            );
+                          });
+                        }
+
+                        int result = game.doGuess(guess!);
+                        String resultMessage;
+                        if (result == 1) {
+                          resultMessage = '$guess is TOO HIGH!, Please Try again.';
+                        } else if (result == -1) {
+                          resultMessage = '$guess is TOO LOW!, Please Try again.';
+                        } else {
+                          resultMessage = '$guess is CORRECT\n total guesses: ${game.getCount}';
+                        }
+
+
+                        showDialog(context: context, barrierDismissible: false, builder: (BuildContext context, ) {
+                          return AlertDialog(
+                            title: Text(titleMessageResult),
+                            content: Text(resultMessage),
+
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    },
+                                  child: Text('Ok')
+                              ),
+                            ],
+                          );
+                        });
+                      },
+                    ),
                   ),
                 ),
               ],
