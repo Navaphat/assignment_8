@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
                             //mainAxisSize: MainAxisSize.min,
                             children: [
                               Text('GUESS', style: TextStyle(fontSize: 50.0, color: Colors.red.shade100)),
-                              Text('THE NUMBER', style: TextStyle(fontSize: 25.0, color: Colors.red)),
+                              Text('THE NUMBER', style: TextStyle(fontSize: 25.0, color: Colors.red),),
                             ],
                           ),
                         ),
