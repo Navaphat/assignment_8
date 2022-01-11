@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Guess_Number',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
@@ -81,7 +81,7 @@ class HomePage extends StatelessWidget {
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.7),
                       border: OutlineInputBorder(),
-                      hintText: 'Guess the Number 1 to 100',
+                      hintText: 'Guess the Number 1 to ${game.getMaxRandom}',
                     ),
                   ),
                   height: 75.0,
@@ -96,15 +96,15 @@ class HomePage extends StatelessWidget {
                       child: Text('Guess', style: TextStyle(fontSize: 25.0, color: Colors.black)),
                       onPressed: () {
                         var input = _controller.text;
-                        var guess = int.tryParse(input!);
-                        String titleMessageResult = 'Result';
-                        String titleMessageError = 'Error';
-                        String errorMessage = 'Wrong Input, Please Enter Number only.';
+                        var guess = int.tryParse(input);
+                        String titleResult = 'Result';
+                        String titleError = 'Error';
+                        String errorMessage = 'Wrong input, Please enter number only.';
 
                         if(guess == null){
                           showDialog(context: context, barrierDismissible: false, builder: (BuildContext context, ) {
                             return AlertDialog(
-                              title: Text(titleMessageError),
+                              title: Text(titleError),
                               content: Text(errorMessage),
 
                               actions: [
@@ -122,17 +122,16 @@ class HomePage extends StatelessWidget {
                         int result = game.doGuess(guess!);
                         String resultMessage;
                         if (result == 1) {
-                          resultMessage = '$guess is TOO HIGH!, Please Try again.';
+                          resultMessage = '$guess is TOO HIGH!, Please try again.';
                         } else if (result == -1) {
-                          resultMessage = '$guess is TOO LOW!, Please Try again.';
+                          resultMessage = '$guess is TOO LOW!, Please try again.';
                         } else {
-                          resultMessage = '$guess is CORRECT\n total guesses: ${game.getCount}';
+                          resultMessage = '$guess is CORRECT, total guesses: ${game.getCount}';
                         }
-
 
                         showDialog(context: context, barrierDismissible: false, builder: (BuildContext context, ) {
                           return AlertDialog(
-                            title: Text(titleMessageResult),
+                            title: Text(titleResult),
                             content: Text(resultMessage),
 
                             actions: [
