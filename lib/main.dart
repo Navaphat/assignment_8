@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
               children: [
                   Expanded(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center ,
                       children: [
                         Image.asset('assets/images/guess_logo.png', width: 125),
                         Padding(
