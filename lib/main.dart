@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'game.dart';
 
 void main() {
@@ -22,11 +23,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+
+  static const buttonSize = 60.0;
+}
+
+class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = TextEditingController();
+
   var game = Game();
+  String alertMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -73,20 +83,47 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
                   ),
-                SizedBox(
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.7),
-                      border: OutlineInputBorder(),
-                      hintText: 'Guess the Number 1 to ${game.getMaxRandom}',
-                    ),
-                  ),
-                  height: 75.0,
-                  width: 350,
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(_input, style: TextStyle(fontSize: 50.0),),
                 ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(alertMessage, style: TextStyle(fontSize: 20.0),),
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for(var i = 1; i <= 3; i++) buildButton(num: i),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for(var i = 4; i <= 6; i++) buildButton(num: i),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for(var i = 7; i <= 9; i++) buildButton(num: i),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildButton(num: -2),
+                    buildButton(num: 0),
+                    buildButton(num: -1),
+                  ],
+                ),
+
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32.0),
                   child: SizedBox(
@@ -95,54 +132,17 @@ class HomePage extends StatelessWidget {
                     child: ElevatedButton(
                       child: Text('Guess', style: TextStyle(fontSize: 25.0, color: Colors.black)),
                       onPressed: () {
-                        var input = _controller.text;
-                        var guess = int.tryParse(input);
-                        String titleResult = 'Result';
-                        String titleError = 'Error';
-                        String errorMessage = 'Wrong input, Please enter number only.';
-
-                        if(guess == null){
-                          showDialog(context: context, barrierDismissible: false, builder: (BuildContext context, ) {
-                            return AlertDialog(
-                              title: Text(titleError),
-                              content: Text(errorMessage),
-
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Ok')
-                                ),
-                              ],
-                            );
-                          });
-                        }
+                        var guess = int.tryParse(_input!);
 
                         int result = game.doGuess(guess!);
-                        String resultMessage;
-                        if (result == 1) {
-                          resultMessage = '$guess is TOO HIGH!, Please try again.';
-                        } else if (result == -1) {
-                          resultMessage = '$guess is TOO LOW!, Please try again.';
-                        } else {
-                          resultMessage = '$guess is CORRECT, total guesses: ${game.getCount}';
-                        }
-
-                        showDialog(context: context, barrierDismissible: false, builder: (BuildContext context, ) {
-                          return AlertDialog(
-                            title: Text(titleResult),
-                            content: Text(resultMessage),
-
-                            actions: [
-                              ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    },
-                                  child: Text('Ok')
-                              ),
-                            ],
-                          );
+                        setState(() {
+                          if (result == 1) {
+                            alertMessage = '$guess is TOO HIGH!, Please try again.';
+                          } else if (result == -1) {
+                            alertMessage = '$guess is TOO LOW!, Please try again.';
+                          } else {
+                            alertMessage = '$guess is CORRECT, total guesses: ${game.getCount}';
+                          }
                         });
                       },
                     ),
@@ -151,6 +151,53 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+
+  String _input = '';
+  Widget buildButton({int? num}) {
+    Widget? child;
+    BoxDecoration? boxDecoration;
+
+    if(num == -1)
+      child = Icon(Icons.backspace_outlined, size: 30.0, color: Colors.green,);
+    else if(num == -2) {
+      child = Text('X', style: TextStyle(fontSize: 20.0),);
+      boxDecoration = BoxDecoration(
+        shape: BoxShape.rectangle,
+        border: Border.all(color: Colors.green, width: 2.0),
+      );
+    }
+    else{
+      child = Text('${num}', style: TextStyle(fontSize: 20.0),);
+      boxDecoration = BoxDecoration(
+        shape: BoxShape.rectangle,
+        border: Border.all(color: Colors.green, width: 2.0),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            if(num == -1)
+              _input = _input.substring(0,_input.length-1);
+            else if(num != -2 && _input.length < 3)
+              _input += "$num";
+            else if(num == -2)
+              _input = '';
+          });
+        },
+        child: Container(
+          width: HomePage.buttonSize,
+          height: 40,
+          decoration: boxDecoration,
+          alignment: Alignment.center,
+          child: child,
         ),
       ),
     );
