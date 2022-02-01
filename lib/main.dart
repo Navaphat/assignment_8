@@ -29,14 +29,14 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 
-  static const buttonSize = 75.0;
+  static const buttonSize = 55.0;
 }
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = TextEditingController();
 
   var game = Game();
-  String alertMessage = '';
+  String alertMessage = 'ทายเลข 1 ถึง ${Game().getMaxRandom}';
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +49,7 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.yellow.shade100,
+            border: Border.all(width: 10.0, color: Colors.green),
             borderRadius: BorderRadius.circular(15.0),
             boxShadow: [
               BoxShadow(
@@ -62,25 +63,27 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center ,
-                    children: [
-                      Image.asset('assets/images/guess_logo.png', width: 125),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          //mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('GUESS', style: TextStyle(fontSize: 50.0, color: Colors.red.shade100)),
-                            Text('THE NUMBER', style: TextStyle(fontSize: 25.0, color: Colors.red),),
-                          ],
-                        ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/guess_logo.png', width: 125.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        //mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('GUESS', style: TextStyle(
+                              fontSize: 50.0, color: Colors.red.shade100)),
+                          Text('THE NUMBER', style: TextStyle(
+                              fontSize: 25.0, color: Colors.red),),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -122,29 +125,56 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
 
-              Padding(
-                padding: const EdgeInsets.only(bottom: 32.0, top: 32.0),
-                child: SizedBox(
-                  height: 50.0,
-                  width: 120.0,
-                  child: ElevatedButton(
-                    child: Text('Guess', style: TextStyle(fontSize: 25.0, color: Colors.black)),
-                    onPressed: () {
-                      var guess = int.tryParse(_input!);
-
-                      int result = game.doGuess(guess!);
-                      setState(() {
-                        if (result == 1) {
-                          alertMessage = '$guess is TOO HIGH!, Please try again.';
-                        } else if (result == -1) {
-                          alertMessage = '$guess is TOO LOW!, Please try again.';
-                        } else {
-                          alertMessage = '$guess is CORRECT, total guesses: ${game.getCount}';
-                        }
-                      });
-                    },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, bottom: 25.0, right: 10.0),
+                    child: SizedBox(
+                      width: 60,
+                      height: 40,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            game = Game();
+                            setState(() {
+                              _input = "";
+                              alertMessage = 'ทายเลข 1 ถึง ${Game().getMaxRandom}';
+                            });
+                          },
+                          child: Icon(Icons.refresh, size: 25.0,),
+                      ),
+                    ),
                   ),
-                ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25.0, top: 25.0),
+                    child: SizedBox(
+                      height: 40.0,
+                      width: 120.0,
+                      child: ElevatedButton(
+                        child: Text('Guess',
+                            style: TextStyle(fontSize: 25.0, color: Colors.black)),
+                        onPressed: () {
+                          var guess = int.tryParse(_input!);
+
+                          int result = game.doGuess(guess!);
+                          setState(() {
+                            if (result == 1) {
+                              _input = '';
+                              alertMessage = '$guess : มากเกินไป';
+                            } else if (result == -1) {
+                              _input = '';
+                              alertMessage = '$guess : น้อยเกินไป';
+                            } else {
+                              alertMessage =
+                              '$guess : ถูกต้อง 🎉 (ทาย ${game.getCount} ครั้ง)';
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -155,42 +185,47 @@ class _HomePageState extends State<HomePage> {
 
 
   String _input = '';
+
   Widget buildButton({int? num}) {
     Widget? child;
     BoxDecoration? boxDecoration = BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.green, width: 2.0,),
+      shape: BoxShape.circle,
+      border: Border.all(color: Colors.green, width: 2.0,),
     );
 
-    if(num == -1)
-      child = Icon(Icons.backspace_outlined, size: 30.0,);
-    else if(num == -2) {
-      child = Text('X', style: TextStyle(fontSize: 25.0),);
+    if (num == -1)
+      child = Icon(Icons.backspace_outlined, size: 25.0,);
+    else if (num == -2) {
+      child = Text('X', style: TextStyle(fontSize: 20.0),);
     }
-    else{
-      child = Text('${num}', style: TextStyle(fontSize: 25.0),);
+    else {
+      child = Text('${num}', style: TextStyle(fontSize: 20.0),);
     }
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            if(num == -1)
-              _input = _input.substring(0,_input.length-1);
-            else if(num != -2 && _input.length < 3)
-              _input += "$num";
-            else if(num == -2)
-              _input = '';
-          });
-        },
-        borderRadius: BorderRadius.circular(37.5),
-        child: Container(
-          width: HomePage.buttonSize,
-          height: HomePage.buttonSize,
-          decoration: boxDecoration,
-          alignment: Alignment.center,
-          child: child,
+      child: Material(
+        color: Colors.yellow.shade100,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              if (num == -1)
+                _input = _input.substring(0, _input.length - 1);
+              else if (num != -2 && _input.length < 3)
+                _input += "$num";
+              else if (num == -2)
+                _input = '';
+            });
+          },
+          borderRadius: BorderRadius.circular(37.5),
+          child: Container(
+            width: HomePage.buttonSize,
+            height: HomePage.buttonSize,
+            decoration: boxDecoration,
+            alignment: Alignment.center,
+            child: child,
+            //color: Colors.transparent,
+          ),
         ),
       ),
     );
