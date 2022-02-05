@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'game.dart';
 
 void main() {
@@ -30,6 +29,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 
   static const buttonSize = 55.0;
+
 }
 
 class _HomePageState extends State<HomePage> {
@@ -183,9 +183,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   String _input = '';
-
   Widget buildButton({int? num}) {
     Widget? child;
     BoxDecoration? boxDecoration = BoxDecoration(
